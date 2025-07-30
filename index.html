@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Cá Nhân</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #2c3e50, #4b6cb7);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #0056b3, #007bff);
+            color: white;
+            padding: 10px 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode .sidebar {
+            background: linear-gradient(90deg, #2c3e50, #4b6cb7);
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            margin-right: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sidebar ul li {
+            margin: 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 100%;
+            margin: 80px auto 20px; /* Offset for horizontal sidebar */
+            overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .container.dark-mode {
+            background-color: rgba(34, 34, 34, 0.95);
+            color: #e0e0e0;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #6b9ed4, #00c4ff);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .container.dark-mode .header {
+            background: linear-gradient(45deg, #2c3e50, #628beb);
+        }
+
+        .header img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 6px solid white;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container.dark-mode .header img {
+            border-color: #e0e0e0;
+        }
+
+        .header img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin: 10px 0;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .container.dark-mode .content {
+            color: #e0e0e0;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 22px;
+            color: #222;
+            border-bottom: 3px solid #2cb6c0;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .container.dark-mode .section h2 {
+            color: #e0e0e0;
+            border-bottom-color: #00c4ff;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #00c4ff;
+            transition: width 0.3s ease;
+        }
+
+        .section:hover h2::after {
+            width: 100px;
+        }
+
+        .about p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .container.dark-mode .about p {
+            color: #c0c0c0;
+        }
+
+        .skills ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skills li {
+            background: linear-gradient(45deg, #87cdee, #00c4ff);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .container.dark-mode .skills li {
+            background: linear-gradient(45deg, #2c3e50, #87cdee);
+        }
+
+        .skills li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(13, 78, 163, 0.363);
+        }
+
+        /* Certificates Styles */
+        .certificates ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .certificates li {
+            flex: 1 1 200px;
+            max-width: 200px;
+        }
+
+        .certificates img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .certificates img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Card Slider for My Games */
+        .my-games {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: calc(100% * 2); /* Double width for looping effect */
+        }
+
+        .slider-card {
+            flex: 0 0 200px;
+            margin: 10px;
+            background: linear-gradient(45deg, #3287e2, #00c4ff);
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .container.dark-mode .slider-card {
+            background: linear-gradient(45deg, #2c3e50, #547fe6);
+        }
+
+        .slider-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .slider-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .slider-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .slider-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .slider-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .slider-controls button {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 18px;
+            transition: background 0.3s ease;
+        }
+
+        .slider-controls button:hover {
+            background: rgba(98, 158, 221, 0.7);
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 18px;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .container.dark-mode .social-links a {
+            color: #00c4ff;
+        }
+
+        .social-links a:hover {
+            color: #87cdee;
+            transform: translateY(-2px);
+        }
+
+        .container.dark-mode .social-links a:hover {
+            color: #0096cc;
+        }
+
+        .contact ul {
+            list-style: none;
+        }
+
+        .contact ul li {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .container.dark-mode .contact ul li {
+            color: #c0c0c0;
+        }
+
+        .contact ul li i {
+            margin-right: 10px;
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        .container.dark-mode .contact ul li i {
+            color: #00c4ff;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                flex-wrap: wrap;
+                padding: 10px;
+            }
+
+            .sidebar h2 {
+                font-size: 16px;
+                margin-right: 10px;
+            }
+
+            .sidebar ul li a {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+
+            .sidebar ul li a i {
+                margin-right: 5px;
+                font-size: 14px;
+            }
+
+            .theme-toggle {
+                font-size: 16px;
+                margin-left: 10px;
+            }
+
+            .container {
+                margin: 100px auto 20px; /* Adjust for smaller sidebar */
+            }
+
+            .header img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .slider-card {
+                flex: 0 0 150px;
+            }
+
+            .slider-card img {
+                height: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="#about"><i class="fas fa-user"></i> Giới thiệu</a></li>
+            <li><a href="#skills"><i class="fas fa-code"></i> Kỹ năng</a></li>
+            <li><a href="#certificates"><i class="fas fa-certificate"></i> Chứ Chỉ</a></li>
+            <li><a href="#my-games"><i class="fas fa-gamepad"></i> My Games</a></li>
+            <li><a href="#social-links"><i class="fas fa-link"></i> Liên kết</a></li>
+            <li><a href="#contact"><i class="fas fa-envelope"></i> Liên hệ</a></li>
+        </ul>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+    <div class="container">
+        <div class="main-content">
+            <div class="header">
+                <img src="images/profile.jpg" alt="Ảnh đại diện">
+                <h1>Nguyễn Văn A</h1>
+                <p>Nhà phát triển web | Yêu thích công nghệ</p>
+            </div>
+            <div class="content">
+                <div class="section about" id="about">
+                    <h2>Giới thiệu</h2>
+                    <p>Xin chào! Mình là Phúc, đang là sinh viên của trường đại học Nguyễn Tất Thành viện đào tạo quốc tế NIIE, đam mê tạo ra các trang web đẹp và chức năng. Tôi có kinh nghiệm làm việc với HTML, CSS, JavaScript và nhiều công nghệ khác.</p>
+                </div>
+                <div class="section skills" id="skills">
+                    <h2>Kỹ năng</h2>
+                    <ul>
+                        <li>HTML</li>
+                        <li>CSS</li>
+                        <li>JavaScript</li>
+                    </ul>
+                </div>
+                <div class="section certificates" id="certificates">
+                    <h2>Chứ Chỉ</h2>
+                    <ul>
+                        <li><img src="images/chứngchỉ.PNG" alt="Chứng chỉ freeCodeCamp"></li>
+                    </ul>
+                </div>
+                <div class="section my-games" id="my-games">
+                    <h2>My Games</h2>
+                    <div class="slider-container" id="slider">
+                        <div class="slider-card">
+                            <img src="images/LeagueOfLegends.jpg" alt="League Of Legends">
+                            <h3>Space Invaders</h3>
+                            <p>Hoa Linh Lục Địa Song Giới Chi Ngoại: Phần 2</p>
+                        </div>
+                        <div class="slider-card">
+                            <img src="images/PUBG.jpg" alt="PUBG">
+                            <h3>Tetris Clone</h3>
+                            <p>PUBG X aespa</p>
+                        </div>
+                        <div class="slider-card">
+                            <img src="images/RiseOfKingdoms.jpg" alt="Rise Of Kingdoms">
+                            <h3>Flappy Bird</h3>
+                            <p>Chinh phục thế giới và tạo ra lịch sử riêng cho bạn</p>
+                        </div>
+                        <div class="slider-card">
+                            <img src="images/WutheringWaves.jpg" alt="Wuthering Waves">
+                            <h3>Snake Game</h3>
+                            <p>Phiên bản 2.5 ra mắt vào ngày 24 tháng 7 (UTC+8)</p>
+                        </div>
+                         <div class="slider-card">
+                            <img src="images/DeltaForce.jpg" alt="Delta Force">
+                            <h3>Snake Game</h3>
+                            <p>Trải nghiệm điều khiển Chiến Hạm, Xe Tăng, Phi Cơ Chiến Đấu đầy uy lực. </p>
+                        </div>
+                        <!-- Duplicate cards for infinite loop -->
+                        <div class="slider-card">
+                            <img src="images/LeagueOfLegends.jpg" alt="League Of Legends">
+                            <h3>Space Invaders</h3>
+                            <p>Hoa Linh Lục Địa Song Giới Chi Ngoại: Phần 2</p>
+                        </div>
+                        <div class="slider-card">
+                            <img src="images/PUBG.jpg" alt="PUBG">
+                            <h3>Tetris Clone</h3>
+                            <p>PUBG X aespa</p>
+                        </div>
+                        <div class="slider-card">
+                            <img src="images/RiseOfKingdoms.jpg" alt="Rise Of Kingdoms">
+                            <h3>Flappy Bird</h3>
+                            <p>Chinh phục thế giới và tạo ra lịch sử riêng cho bạn</p>
+                        </div>
+                        <div class="slider-card">
+                            <img src="images/WutheringWaves.jpg" alt="Wuthering Waves">
+                            <h3>Snake Game</h3>
+                            <p>Phiên bản 2.5 ra mắt vào ngày 24 tháng 7 (UTC+8)</p>
+                        </div>
+                        <div class="slider-card">
+                            <img src="images/DeltaForce.jpg" alt="Delta Force">
+                            <h3>Snake Game</h3>
+                            <p>Trải nghiệm điều khiển Chiến Hạm, Xe Tăng, Phi Cơ Chiến Đấu đầy uy lực. </p>
+                        </div>
+                    </div>
+                    <div class="slider-controls">
+                        <button onclick="slideLeft()"><i class="fas fa-chevron-left"></i></button>
+                        <button onclick="slideRight()"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="section social-links" id="social-links">
+                    <h2>Liên kết</h2>
+                    <a href="https://www.facebook.com/Tatsumi.38632/" target="_blank">Facebook</a>
+                    <a href="https://www.instagram.com/phucphuc.2905/" target="_blank">Instagram</a>
+                    <a href="https://www.tiktok.com/@phucphuc2905" target="_blank">TikTok</a>
+                </div>
+                <div class="section contact" id="contact">
+                    <h2>Liên hệ</h2>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> Số điện thoại: +84 896 117 072</li>
+                        <li><i class="fas fa-envelope"></i> Gmail: gnarnguyen2005@gmail.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Địa chỉ:318b Võ Văn Hát, Q9, Phường Long Trường, TP.HCM</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const container = document.querySelector('.container');
+            const themeToggle = document.querySelector('.theme-toggle i');
+            body.classList.toggle('dark-mode');
+            container.classList.toggle('dark-mode');
+            themeToggle.classList.toggle('fa-moon');
+            themeToggle.classList.toggle('fa-sun');
+        }
+
+        let currentSlide = 0;
+        const slider = document.getElementById('slider');
+        const cards = slider.children;
+        const cardWidth = 220; // Card width (200px) + margin (10px + 10px)
+        const totalCards = cards.length / 2; // Original cards (duplicated for loop)
+        let autoSlideInterval;
+
+        function slideLeft() {
+            currentSlide--;
+            if (currentSlide < 0) {
+                currentSlide = totalCards - 1;
+                slider.style.transition = 'none';
+                slider.style.transform = `translateX(-${totalCards * cardWidth}px)`;
+                setTimeout(() => {
+                    slider.style.transition = 'transform 0.5s ease';
+                    slider.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+                }, 0);
+            } else {
+                slider.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+            }
+            resetAutoSlide();
+        }
+
+        function slideRight() {
+            currentSlide++;
+            if (currentSlide >= totalCards) {
+                currentSlide = 0;
+                slider.style.transition = 'none';
+                slider.style.transform = `translateX(0)`;
+                setTimeout(() => {
+                    slider.style.transition = 'transform 0.5s ease';
+                    slider.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+                }, 0);
+            } else {
+                slider.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+            }
+            resetAutoSlide();
+        }
+
+        function autoSlide() {
+            currentSlide++;
+            if (currentSlide >= totalCards) {
+                currentSlide = 0;
+                slider.style.transition = 'none';
+                slider.style.transform = `translateX(0)`;
+                setTimeout(() => {
+                    slider.style.transition = 'transform 0.5s ease';
+                    slider.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+                }, 0);
+            } else {
+                slider.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+            }
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(autoSlide, 3000); // Slide every 3 seconds
+        }
+
+        function resetAutoSlide() {
+            clearInterval(autoSlideInterval);
+            startAutoSlide();
+        }
+
+        // Start auto-slide on page load
+        startAutoSlide();
+
+        // Pause auto-slide on hover
+        slider.parentElement.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+        slider.parentElement.addEventListener('mouseleave', startAutoSlide);
+    </script>
+</body>
+</html>
